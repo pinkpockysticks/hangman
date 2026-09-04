@@ -23,23 +23,51 @@ public class Game {
     }
 
     public Phrase getPhrase() {
-        while (true) {
-            System.out.print("Enter a word or phrase for the other player to guess: ");
-            String p = input.nextLine().trim();
+        String p = validatePhrase();
+        String h = getHint();
 
-            Pattern pattern = Pattern.compile("^[a-zA-Z ]+$");
+        return new Phrase(p, h);
+    }
 
-            Matcher matcher = pattern.matcher(p);
-            boolean matchFound = matcher.find();
+    public String validatePhrase() {
+        System.out.print("Enter a word or phrase for the other player to guess: ");
+        String p = input.nextLine().trim();
 
-            while (!matchFound || p.length() > 200) {
-                System.out.print("Your word or phrase can only contain letters and spaces and must be 200 characters or less. Try again: ");
-                p = input.nextLine().trim();
-                matcher = pattern.matcher(p);
-                matchFound = matcher.find();
-            }
-            p = p.toLowerCase().replaceAll(" +", " ");
-            return new Phrase(p);
+        Pattern pattern = Pattern.compile("^[a-zA-Z ]+$");
+
+        Matcher matcher = pattern.matcher(p);
+        boolean matchFound = matcher.find();
+
+        while (!matchFound || p.length() > 200) {
+            System.out.print("Your word or phrase can only contain letters and spaces and must be 200 characters or less. Try again: ");
+            p = input.nextLine().trim();
+            matcher = pattern.matcher(p);
+            matchFound = matcher.find();
         }
+        p = p.toLowerCase().replaceAll(" +", " ");
+        return p;
+    }
+
+    public String getHint() {
+        System.out.println("What category is your word or phrase?");
+        System.out.println("Suggestions: film, tv, music, book, sport, animal, person, brand, none");
+        System.out.println("Enter a category:");
+        String h = input.nextLine().trim();
+
+        Pattern pattern = Pattern.compile("^[a-zA-Z ]+$");
+
+        Matcher matcher = pattern.matcher(h);
+        boolean matchFound = matcher.find();
+
+        while (!matchFound || h.length() > 20) {
+            System.out.print("Your category can only contain letters and spaces and must be 20 characters or less. Try again: ");
+            h = input.nextLine().trim();
+            matcher = pattern.matcher(h);
+            matchFound = matcher.find();
+        }
+
+        h = h.toLowerCase().replaceAll(" +", " ");
+        return h;
+
     }
 }
