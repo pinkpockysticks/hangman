@@ -1,10 +1,14 @@
 package main;
 
+import java.io.File;
+import java.util.Scanner;
+
 public class Main {
 
     public static void main() {
 
         printTitle();
+        signIn();
     }
 
     public static void printTitle() {
@@ -17,5 +21,29 @@ public class Main {
                   <<  //       ||>>_     //  \\\\  \\\\    >>.-,//|(_  <<   >>   //   \\\\_      //   \\\\  \\\\    >> ||   \\\\,-._)(|_  <<,-,,-.   \\\\    >> ||   \\\\,-.\s
                  (__)(__)     (__)__)   (_")("_)(__)  (__)\\_) (__)(__) (__) (__)  (__)    (_") ("_)(__)  (__)(_")  (_/(__)__)  (./  \\.) (__)  (__)(_")  (_/ \s
                 """);
+    }
+
+    public static void signIn() {
+
+        while (true) {
+            System.out.println("Start new game [s], continue saved game [c] or quit [q] ?");
+            Scanner scanner = new Scanner(System.in);
+            String s = scanner.nextLine();
+            s = s.trim();
+
+            if (s.equalsIgnoreCase("s")) {
+                break;
+            } else if (s.equalsIgnoreCase("c")) {
+                File file = new File("saves.txt");
+                if (!file.exists()) {
+                    System.out.println("No saved game found.");
+                } else {
+                    break;
+                }
+
+            } else if (s.equalsIgnoreCase("q")) {
+                System.exit(0);
+            }
+        }
     }
 }
