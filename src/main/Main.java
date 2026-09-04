@@ -2,13 +2,15 @@ package main;
 
 import java.io.File;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
 
     public static void main() {
 
         printTitle();
-        signIn();
+        menu();
     }
 
     public static void printTitle() {
@@ -23,7 +25,7 @@ public class Main {
                 """);
     }
 
-    public static void signIn() {
+    public static void menu() {
 
         while (true) {
             System.out.println("Start new game [s], continue saved game [c] or quit [q] ?");
@@ -32,6 +34,7 @@ public class Main {
             s = s.trim();
 
             if (s.equalsIgnoreCase("s")) {
+                signUp();
                 break;
             } else if (s.equalsIgnoreCase("c")) {
                 File file = new File("saves.txt");
@@ -40,10 +43,46 @@ public class Main {
                 } else {
                     break;
                 }
-
             } else if (s.equalsIgnoreCase("q")) {
                 System.exit(0);
             }
         }
     }
+
+    public static void signUp() {
+        Player player1 = getName(1);
+        Player player2 = getName(2);
+        Game game = new Game(player1, player2);
+        game.playGame();
+    }
+
+    public static Player getName(int playerNo) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Enter name of player " + playerNo);
+            String name = scanner.nextLine();
+            name = name.trim();
+            boolean valid = validatePlayerName(name);
+            while (!valid) {
+                System.out.println("Entered name not valid. Name must only contain letters. Please try again:");
+                name = scanner.nextLine();
+                valid = validatePlayerName(name);
+            }
+            Player player = new Player(name);
+            return player;
+        }
+    }
+
+    public static boolean validatePlayerName(String name) {
+
+        Pattern pattern = Pattern.compile("^[a-zA-Z]+$");
+        Matcher matcher = pattern.matcher(name);
+        boolean matchFound = matcher.find();
+        if (matchFound) {
+            return true;
+        }
+        return false;
+    }
+
 }
