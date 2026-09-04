@@ -8,7 +8,7 @@ public class Main {
     public static void main() {
 
         printTitle();
-        signIn();
+        menu();
     }
 
     public static void printTitle() {
@@ -23,7 +23,7 @@ public class Main {
                 """);
     }
 
-    public static void signIn() {
+    public static void menu() {
 
         while (true) {
             System.out.println("Start new game [s], continue saved game [c] or quit [q] ?");
@@ -32,6 +32,7 @@ public class Main {
             s = s.trim();
 
             if (s.equalsIgnoreCase("s")) {
+                signUp();
                 break;
             } else if (s.equalsIgnoreCase("c")) {
                 File file = new File("saves.txt");
@@ -40,10 +41,10 @@ public class Main {
                 } else {
                     break;
                 }
-
             } else if (s.equalsIgnoreCase("q")) {
                 System.exit(0);
             }
         }
     }
+
 }
