@@ -2,6 +2,8 @@ package main;
 
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Game {
 
@@ -16,5 +18,28 @@ public class Game {
         this.input = new Scanner(System.in);
     }
 
-    public void playGame() {}
+    public void playGame() {
+        Phrase phrase = getPhrase();
+    }
+
+    public Phrase getPhrase() {
+        while (true) {
+            System.out.print("Enter a word or phrase for the other player to guess: ");
+            String p = input.nextLine().trim();
+
+            Pattern pattern = Pattern.compile("^[a-zA-Z ]+$");
+
+            Matcher matcher = pattern.matcher(p);
+            boolean matchFound = matcher.find();
+
+            while (!matchFound || p.length() > 200) {
+                System.out.print("Your word or phrase can only contain letters and spaces and must be 200 characters or less. Try again: ");
+                p = input.nextLine().trim();
+                matcher = pattern.matcher(p);
+                matchFound = matcher.find();
+            }
+            p = p.toLowerCase().replaceAll(" +", " ");
+            return new Phrase(p);
+        }
+    }
 }
