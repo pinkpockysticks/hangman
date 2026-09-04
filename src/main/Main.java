@@ -50,10 +50,10 @@ public class Main {
     }
 
     public static void signUp() {
-
         Player player1 = getName(1);
         Player player2 = getName(2);
-
+        Game game = new Game(player1, player2);
+        game.playGame();
     }
 
     public static Player getName(int playerNo) {

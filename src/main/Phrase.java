@@ -20,4 +20,13 @@ public class Phrase {
         }
         return phraseCharacters;
     }
+
+    public String getPhrase() {
+        return phrase;
+    }
+
+    public List<Character> getCharacters() {
+        return characters;
+    }
+
 }
