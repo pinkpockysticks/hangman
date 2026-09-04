@@ -47,4 +47,22 @@ public class Main {
         }
     }
 
+    public static void signUp() {
+
+        Player player1 = getName(1);
+        Player player2 = getName(2);
+
+    }
+
+    public static Player getName(int playerNo) {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("Enter name of player " + playerNo);
+            String name = scanner.nextLine();
+            Player player = new Player(name);
+            return player;
+        }
+    }
+
 }
