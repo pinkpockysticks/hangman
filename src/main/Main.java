@@ -2,6 +2,8 @@ package main;
 
 import java.io.File;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Main {
 
@@ -60,9 +62,27 @@ public class Main {
         while (true) {
             System.out.println("Enter name of player " + playerNo);
             String name = scanner.nextLine();
+            name = name.trim();
+            boolean valid = validatePlayerName(name);
+            while (!valid) {
+                System.out.println("Entered name not valid. Name must only contain letters. Please try again:");
+                name = scanner.nextLine();
+                valid = validatePlayerName(name);
+            }
             Player player = new Player(name);
             return player;
         }
+    }
+
+    public static boolean validatePlayerName(String name) {
+
+        Pattern pattern = Pattern.compile("^[a-zA-Z]+$");
+        Matcher matcher = pattern.matcher(name);
+        boolean matchFound = matcher.find();
+        if (matchFound) {
+            return true;
+        }
+        return false;
     }
 
 }
