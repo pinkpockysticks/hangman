@@ -7,10 +7,12 @@ public class Phrase {
 
     private String phrase;
     private List<Character> characters;
+    private String hint;
 
-    public Phrase(String phrase) {
+    public Phrase(String phrase, String hint) {
         this.phrase = phrase;
         this.characters = splitPhrase(phrase);
+        this.hint = hint;
     }
 
     public List<Character> splitPhrase(String phrase) {
@@ -27,6 +29,10 @@ public class Phrase {
 
     public List<Character> getCharacters() {
         return characters;
+    }
+
+    public String getHint() {
+        return hint;
     }
 
 }
