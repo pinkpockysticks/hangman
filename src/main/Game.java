@@ -22,6 +22,7 @@ public class Game {
 
     public void playGame() {
         Phrase phrase = getPhrase();
+        setState(phrase);
 
         if (phrase != null) {
             displayGame(phrase);
@@ -74,6 +75,12 @@ public class Game {
 
         h = h.toLowerCase().replaceAll(" +", " ");
         return h;
+    }
+
+    public void setState(Phrase phrase) {
+        for (char c : phrase.getCharacters()) {
+            state.put(phrase.getCharacters().get(c), '_');
+        }
     }
 
     private void displayGame(Phrase phrase) {
