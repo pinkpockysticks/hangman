@@ -29,6 +29,10 @@ public class Game {
             while (true) {
                 System.out.println("Category: " + phrase.getHint());
                 System.out.println("List of available commands: [quit]");
+                System.out.print("Incorrect guesses (" + mistakesCounter + "/6):");
+                for (char m : mistakes) {
+                    System.out.print(" " + m + " ");
+                }
                 if (!enterLetter(phrase, true)) {
                     break;
                 }
@@ -108,13 +112,14 @@ public class Game {
     }
 
     private boolean enterLetter(Phrase phrase, boolean quitReturnsToMainMenu) {
+        System.out.println();
         System.out.println("Enter letter or command: ");
         String s = input.nextLine().trim().toLowerCase();
         if (s.length() != 1) {
             if (s.equals("quit")) {
                 return false; //will implement saving and quitting later
             } else {
-                System.out.print("That's not a valid letter or command! Try again: ");
+                System.out.print("That's not a valid letter or command!");
                 return true;
             }
         } else {
@@ -122,7 +127,7 @@ public class Game {
             Matcher matcher = pattern.matcher(s);
             boolean matchFound = matcher.find();
             if (!matchFound) {
-                System.out.print("That's not a valid letter or command! Try again: ");
+                System.out.print("That's not a valid letter or command!");
             } else {
                 char l = s.charAt(0);
                 if (state.containsKey(l) && state.get(l) != l) { //correct guess
@@ -130,16 +135,16 @@ public class Game {
                     //update stats
                     return true;
                 } else if (state.containsKey(l) && state.get(l) == l) {
-                    System.out.print("You've already guessed this letter! Try again: ");
+                    System.out.print("You've already guessed this letter!");
                     return true; // if entered info is the same as the game state do nothing
                 } else if (!state.containsKey(l) && !mistakes.contains(l)) { // incorrect guess
-                    System.out.print("Wrong letter! Try again: ");
+                    System.out.print("Wrong letter!");
                     mistakes.add(l);
                     mistakesCounter++;
                     //update stats
                     return true;
                 } else { // already guessed incorrect letter
-                    System.out.print("You've already guessed this letter! Try again: ");
+                    System.out.print("You've already guessed this letter!");
                     return true;
                 }
 
