@@ -1,9 +1,6 @@
 package main;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +10,8 @@ public class Game {
     private Player player2;
     private Scanner input;
     private HashMap<Character, Character> state = new HashMap<>();
+    private List<Character> mistakes = new ArrayList<>();
+    private int mistakesCounter = 0;
 
     public Game(Player player1, Player player2) {
         this.player1 = player1;
@@ -22,9 +21,23 @@ public class Game {
 
     public void playGame() {
         Phrase phrase = getPhrase();
+        setState(phrase);
 
         if (phrase != null) {
             displayGame(phrase);
+
+            while (true) {
+                System.out.println("Category: " + phrase.getHint());
+                System.out.println("List of available commands: [quit]");
+                System.out.print("Incorrect guesses (" + mistakesCounter + "/6):");
+                for (char m : mistakes) {
+                    System.out.print(" " + m + " ");
+                }
+                if (!enterLetter(phrase, true)) {
+                    break;
+                }
+                displayGame(phrase);
+            }
         }
     }
 
@@ -76,18 +89,68 @@ public class Game {
         return h;
     }
 
+    public void setState(Phrase phrase) {
+        for (char c : phrase.getCharacters()) {
+            state.put(c, '_');
+        }
+    }
+
     private void displayGame(Phrase phrase) {
         List<Character> characters = phrase.getCharacters();
-
+        System.out.println();
         for (int i = 0; i < characters.size(); i++) {
             Character character = characters.get(i);
             if (Objects.equals(character, ' ')) {
                 System.out.print("    ");
-            } else {
+            } else if (state.get(character).equals("_")){
                 System.out.print("_ ");
+            } else {
+                System.out.print(state.get(character) + " ");
             }
         }
         System.out.println();
+    }
+
+    private boolean enterLetter(Phrase phrase, boolean quitReturnsToMainMenu) {
+        System.out.println();
+        System.out.println("Enter letter or command: ");
+        String s = input.nextLine().trim().toLowerCase();
+        if (s.length() != 1) {
+            if (s.equals("quit")) {
+                return false; //will implement saving and quitting later
+            } else {
+                System.out.print("That's not a valid letter or command!");
+                return true;
+            }
+        } else {
+            Pattern pattern = Pattern.compile("^[a-zA-Z]$");
+            Matcher matcher = pattern.matcher(s);
+            boolean matchFound = matcher.find();
+            if (!matchFound) {
+                System.out.print("That's not a valid letter or command!");
+            } else {
+                char l = s.charAt(0);
+                if (state.containsKey(l) && state.get(l) != l) { //correct guess
+                    state.put(l, l);
+                    //update stats
+                    return true;
+                } else if (state.containsKey(l) && state.get(l) == l) {
+                    System.out.print("You've already guessed this letter!");
+                    return true; // if entered info is the same as the game state do nothing
+                } else if (!state.containsKey(l) && !mistakes.contains(l)) { // incorrect guess
+                    System.out.print("Wrong letter!");
+                    mistakes.add(l);
+                    mistakesCounter++;
+                    //update stats
+                    return true;
+                } else { // already guessed incorrect letter
+                    System.out.print("You've already guessed this letter!");
+                    return true;
+                }
+
+            }
+        }
+        return true;
     }
 
 }
