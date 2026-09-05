@@ -26,6 +26,15 @@ public class Game {
 
         if (phrase != null) {
             displayGame(phrase);
+
+            while (true) {
+                System.out.println("Category: " + phrase.getHint());
+                System.out.println("List of available commands: [quit]");
+                if (!enterLetter(phrase, true)) {
+                    break;
+                }
+
+            }
         }
     }
 
@@ -79,7 +88,7 @@ public class Game {
 
     public void setState(Phrase phrase) {
         for (char c : phrase.getCharacters()) {
-            state.put(phrase.getCharacters().get(c), '_');
+            state.put(c, '_');
         }
     }
 
@@ -95,6 +104,41 @@ public class Game {
             }
         }
         System.out.println();
+    }
+
+    private boolean enterLetter(Phrase phrase, boolean quitReturnsToMainMenu) {
+        System.out.print("Enter letter or command: ");
+        String s = input.nextLine().trim().toLowerCase();
+        if (s.length() != 1) {
+            if (s.equals("quit")) {
+                return false; //will implement saving and quitting later
+            } else {
+                System.out.print("That's not a valid letter or command! Try again: ");
+                return true;
+            }
+        } else {
+            Pattern pattern = Pattern.compile("^[a-zA-Z]$");
+            Matcher matcher = pattern.matcher(s);
+            boolean matchFound = matcher.find();
+            if (!matchFound) {
+                System.out.print("That's not a valid letter or command! Try again: ");
+            } else {
+                char l = s.charAt(0);
+                if (state.containsKey(l) && state.get(l) != l) { //correct guess
+                    state.put(l, l);
+                    //update stats
+                    return true;
+                } else if (state.containsKey(l) && state.get(l) == l) {
+                    return true; // if entered info is the same as the game state do nothing
+                } else if (!state.containsKey(l)) {
+                    return true; //update mistakes counter and stats
+                } else { // add another scenario for already guessed incorrect letter
+                    return true;
+                }
+
+            }
+        }
+        return true;
     }
 
 }
