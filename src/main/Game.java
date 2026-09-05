@@ -81,7 +81,7 @@ public class Game {
 
         for (int i = 0; i < characters.size(); i++) {
             Character character = characters.get(i);
-            if (Objects.equals(character, " ")) {
+            if (Objects.equals(character, ' ')) {
                 System.out.print("    ");
             } else {
                 System.out.print("_ ");
