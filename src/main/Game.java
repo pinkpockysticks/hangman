@@ -1,6 +1,8 @@
 package main;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +22,10 @@ public class Game {
 
     public void playGame() {
         Phrase phrase = getPhrase();
+
+        if (phrase != null) {
+            displayGame(phrase);
+        }
     }
 
     public Phrase getPhrase() {
@@ -68,6 +74,20 @@ public class Game {
 
         h = h.toLowerCase().replaceAll(" +", " ");
         return h;
-
     }
+
+    private void displayGame(Phrase phrase) {
+        List<Character> characters = phrase.getCharacters();
+
+        for (int i = 0; i < characters.size(); i++) {
+            Character character = characters.get(i);
+            if (Objects.equals(character, ' ')) {
+                System.out.print("    ");
+            } else {
+                System.out.print("_ ");
+            }
+        }
+        System.out.println();
+    }
+
 }
