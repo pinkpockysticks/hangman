@@ -28,16 +28,25 @@ public class Main {
     public static void menu() {
 
         while (true) {
+            File file = new File("saves.txt");
             System.out.println("Start new game [s], continue saved game [c] or quit [q] ?");
             Scanner scanner = new Scanner(System.in);
             String s = scanner.nextLine();
             s = s.trim();
 
             if (s.equalsIgnoreCase("s")) {
-                signUp();
-                break;
-            } else if (s.equalsIgnoreCase("c")) {
-                File file = new File("saves.txt");
+                if (file.exists()) {
+                    System.out.println("Starting a new game will overwrite your previous saved game. Do you want to continue? [y/n]");
+                    s = scanner.nextLine().trim().toLowerCase();
+                    if (s.equalsIgnoreCase("y")) {
+                        signUp();
+                        break;
+                    }
+                } else {
+                    signUp();
+                    break;
+                }
+                } else if (s.equalsIgnoreCase("c")) {
                 if (!file.exists()) {
                     System.out.println("No saved game found.");
                 } else {
@@ -86,7 +95,6 @@ public class Main {
     }
 
     public static void quitGame() {
-        //save game
         System.exit(0);
     }
 
