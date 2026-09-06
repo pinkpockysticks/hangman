@@ -20,11 +20,12 @@ public class Game {
     }
 
     public void playGame() {
-        Phrase phrase = getPhrase();
         Player guessingPlayer = player1;
         Player otherPlayer = player2;
+        Phrase phrase = getPhrase(guessingPlayer, otherPlayer);
 
         if (phrase != null) {
+            System.out.print(guessingPlayer.getName() + "! It's time to guess...");
             displayGame(phrase);
 
             while (true) {
@@ -39,9 +40,12 @@ public class Game {
                 }
 
                 if (isSolved(phrase)) {
-                    //increment points
+                    guessingPlayer.incrementScore();
                     displayGame(phrase);
-                    System.out.println("Solved!");
+                    System.out.println("Solved! " + guessingPlayer.getName() + " wins this round and gains one point!");
+                    System.out.println("Points:");
+                    System.out.println(player1.getName() + ": " + player1.getScore());
+                    System.out.println(player2.getName() + ": " + player2.getScore());
                     break;
                 }
 
@@ -50,7 +54,8 @@ public class Game {
         }
     }
 
-    public Phrase getPhrase() {
+    public Phrase getPhrase(Player guessingPlayer, Player otherPlayer) {
+        System.out.print(otherPlayer.getName() + "! Enter a word or phrase for " + guessingPlayer.getName() + " to guess: ");
         String p = validatePhrase();
         String h = getHint();
 
@@ -58,7 +63,6 @@ public class Game {
     }
 
     public String validatePhrase() {
-        System.out.print("Enter a word or phrase for the other player to guess: ");
         String p = input.nextLine().trim();
 
         Pattern pattern = Pattern.compile("^[a-zA-Z ]+$");
