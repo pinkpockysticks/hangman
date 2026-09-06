@@ -17,9 +17,15 @@ public class Game {
     private List<Character> mistakes = new ArrayList<>();
     private int mistakesCounter = 0;
 
+    // constructor for standard use
     public Game(Player player1, Player player2) {
         this.player1 = player1;
         this.player2 = player2;
+        this.input = new Scanner(System.in);
+    }
+
+    // constructor for loading game
+    public Game() {
         this.input = new Scanner(System.in);
     }
 

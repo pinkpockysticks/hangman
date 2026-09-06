@@ -50,6 +50,8 @@ public class Main {
                 if (!file.exists()) {
                     System.out.println("No saved game found.");
                 } else {
+                    Game game = new Game();
+                    game.playGame();
                     break;
                 }
             } else if (s.equalsIgnoreCase("q")) {
