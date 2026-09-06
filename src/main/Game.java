@@ -34,7 +34,7 @@ public class Game {
 
             while (true) {
                 System.out.println("Category: " + phrase.getHint());
-                System.out.println("List of available commands: [save, quit]");
+                System.out.println("List of available commands: save and continue [save], save and quit [quit]");
                 System.out.print("Incorrect guesses (" + mistakesCounter + "/6):");
                 for (char m : mistakes) {
                     System.out.print(" " + m + " ");
@@ -62,6 +62,7 @@ public class Game {
                     guessingPlayer = otherPlayer;
                     otherPlayer = tempPlayer;
                     saveGame(phrase, guessingPlayer, otherPlayer);
+                    Main.menu();
                     break;
                 }
 
@@ -142,7 +143,8 @@ public class Game {
         if (s.length() != 1) {
             if (s.equals("quit")) {
                 saveGame(phrase, guessingPlayer, otherPlayer);
-                return false; //will implement saving and quitting later
+                Main.menu();
+                return false;
             } else if (s.equals("save")){
                 saveGame(phrase, guessingPlayer, otherPlayer);
                 return true;

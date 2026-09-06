@@ -95,7 +95,6 @@ public class Main {
     }
 
     public static void quitGame() {
-        //save game
         System.exit(0);
     }
 
