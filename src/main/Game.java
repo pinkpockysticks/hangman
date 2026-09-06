@@ -1,5 +1,9 @@
 package main;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,7 +34,7 @@ public class Game {
 
             while (true) {
                 System.out.println("Category: " + phrase.getHint());
-                System.out.println("List of available commands: [quit]");
+                System.out.println("List of available commands: [save, quit]");
                 System.out.print("Incorrect guesses (" + mistakesCounter + "/6):");
                 for (char m : mistakes) {
                     System.out.print(" " + m + " ");
@@ -43,19 +47,21 @@ public class Game {
                     guessingPlayer.incrementScore();
                     displayGame(phrase);
                     System.out.println("Solved! " + guessingPlayer.getName() + " wins this round and gains one point!");
-                    System.out.println("Points:");
-                    System.out.println(player1.getName() + ": " + player1.getScore());
-                    System.out.println(player2.getName() + ": " + player2.getScore());
-                    break;
-                }
-
-                if (mistakesCounter > 5) {
+                } else if (mistakesCounter > 5) {
                     otherPlayer.incrementScore();
+                    displayGame(phrase);
                     System.out.println(guessingPlayer.getName() + " has ran out of guesses! " + otherPlayer.getName() + " wins this round and gains one point!");
                     System.out.println("The answer was: " + phrase.getPhrase());
+                }
+
+                if (isSolved(phrase) || mistakesCounter > 5) {
                     System.out.println(" -- Points -- ");
                     System.out.println(player1.getName() + ": " + player1.getScore());
                     System.out.println(player2.getName() + ": " + player2.getScore());
+                    Player tempPlayer = guessingPlayer;
+                    guessingPlayer = otherPlayer;
+                    otherPlayer = tempPlayer;
+                    saveGame(phrase);
                     break;
                 }
 
@@ -135,7 +141,11 @@ public class Game {
         String s = input.nextLine().trim().toLowerCase();
         if (s.length() != 1) {
             if (s.equals("quit")) {
+                saveGame(phrase);
                 return false; //will implement saving and quitting later
+            } else if (s.equals("save")){
+                saveGame(phrase);
+                return true;
             } else {
                 System.out.println("That's not a valid letter or command!");
                 return true;
@@ -180,6 +190,50 @@ public class Game {
             }
         }
         return true;
+    }
+
+    public void saveGame(Phrase phrase) {
+
+        File file = new File("saves.txt");
+
+        try{
+            BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+
+            bw.write("\n");
+
+            bw.write("correct guesses\n");
+            for (Character character : correctGuesses) {
+                bw.write(character + "/n");
+            }
+
+            bw.write("incorrect guesses\n");
+            for (Character character : mistakes) {
+                bw.write(character + "/n");
+            }
+
+            bw.write("mistakes count\n");
+            bw.write(mistakesCounter + "/n");
+
+            bw.write("phrase characters\n");
+            List<Character> characters = phrase.getCharacters();
+            for (Character character : characters) {
+                bw.write(character + "/n");
+            }
+
+            bw.write("phrase\n");
+            String word = phrase.getPhrase();
+            bw.write(word + "/n");
+
+            bw.write("category\n");
+            String hint = phrase.getHint();
+            bw.write(hint + "/n");
+
+            bw.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Game saved successfully!");
     }
 
 }
