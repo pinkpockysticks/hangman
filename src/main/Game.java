@@ -9,7 +9,7 @@ public class Game {
     private Player player1;
     private Player player2;
     private Scanner input;
-    private HashMap<Character, Character> state = new HashMap<>();
+    private List<Character> correctGuesses = new ArrayList<>();
     private List<Character> mistakes = new ArrayList<>();
     private int mistakesCounter = 0;
 
@@ -20,10 +20,12 @@ public class Game {
     }
 
     public void playGame() {
-        Phrase phrase = getPhrase();
-        setState(phrase);
+        Player guessingPlayer = player1;
+        Player otherPlayer = player2;
+        Phrase phrase = getPhrase(guessingPlayer, otherPlayer);
 
         if (phrase != null) {
+            System.out.print(guessingPlayer.getName() + "! It's time to guess...");
             displayGame(phrase);
 
             while (true) {
@@ -36,12 +38,24 @@ public class Game {
                 if (!enterLetter(phrase, true)) {
                     break;
                 }
+
+                if (isSolved(phrase)) {
+                    guessingPlayer.incrementScore();
+                    displayGame(phrase);
+                    System.out.println("Solved! " + guessingPlayer.getName() + " wins this round and gains one point!");
+                    System.out.println("Points:");
+                    System.out.println(player1.getName() + ": " + player1.getScore());
+                    System.out.println(player2.getName() + ": " + player2.getScore());
+                    break;
+                }
+
                 displayGame(phrase);
             }
         }
     }
 
-    public Phrase getPhrase() {
+    public Phrase getPhrase(Player guessingPlayer, Player otherPlayer) {
+        System.out.print(otherPlayer.getName() + "! Enter a word or phrase for " + guessingPlayer.getName() + " to guess: ");
         String p = validatePhrase();
         String h = getHint();
 
@@ -49,7 +63,6 @@ public class Game {
     }
 
     public String validatePhrase() {
-        System.out.print("Enter a word or phrase for the other player to guess: ");
         String p = input.nextLine().trim();
 
         Pattern pattern = Pattern.compile("^[a-zA-Z ]+$");
@@ -89,12 +102,6 @@ public class Game {
         return h;
     }
 
-    public void setState(Phrase phrase) {
-        for (char c : phrase.getCharacters()) {
-            state.put(c, '_');
-        }
-    }
-
     private void displayGame(Phrase phrase) {
         List<Character> characters = phrase.getCharacters();
         System.out.println();
@@ -102,16 +109,17 @@ public class Game {
             Character character = characters.get(i);
             if (Objects.equals(character, ' ')) {
                 System.out.print("    ");
-            } else if (state.get(character).equals("_")){
-                System.out.print("_ ");
+            } else if (correctGuesses.contains(character)){
+                System.out.print(character + " ");
             } else {
-                System.out.print(state.get(character) + " ");
+                System.out.print("_ ");
             }
         }
         System.out.println();
     }
 
     private boolean enterLetter(Phrase phrase, boolean quitReturnsToMainMenu) {
+        List<Character> characters = phrase.getCharacters();
         System.out.println();
         System.out.println("Enter letter or command: ");
         String s = input.nextLine().trim().toLowerCase();
@@ -119,7 +127,7 @@ public class Game {
             if (s.equals("quit")) {
                 return false; //will implement saving and quitting later
             } else {
-                System.out.print("That's not a valid letter or command!");
+                System.out.println("That's not a valid letter or command!");
                 return true;
             }
         } else {
@@ -127,27 +135,38 @@ public class Game {
             Matcher matcher = pattern.matcher(s);
             boolean matchFound = matcher.find();
             if (!matchFound) {
-                System.out.print("That's not a valid letter or command!");
+                System.out.println("That's not a valid letter or command!");
             } else {
                 char l = s.charAt(0);
-                if (state.containsKey(l) && state.get(l) != l) { //correct guess
-                    state.put(l, l);
+                if (characters.contains(l) && !correctGuesses.contains(l)) { //correct guess
+                    correctGuesses.add(l);
                     //update stats
                     return true;
-                } else if (state.containsKey(l) && state.get(l) == l) {
-                    System.out.print("You've already guessed this letter!");
-                    return true; // if entered info is the same as the game state do nothing
-                } else if (!state.containsKey(l) && !mistakes.contains(l)) { // incorrect guess
-                    System.out.print("Wrong letter!");
+                } else if (characters.contains(l) && correctGuesses.contains(l)) {
+                    System.out.println("You've already guessed this letter!");
+                    return true; // if entered info is the same as the game correctGuesses do nothing
+                } else if (!characters.contains(l) && !mistakes.contains(l)) { // incorrect guess
+                    System.out.println("Wrong letter!");
                     mistakes.add(l);
                     mistakesCounter++;
                     //update stats
                     return true;
                 } else { // already guessed incorrect letter
-                    System.out.print("You've already guessed this letter!");
+                    System.out.println("You've already guessed this letter!");
                     return true;
                 }
 
+            }
+        }
+        return true;
+    }
+
+    public boolean isSolved(Phrase phrase) {
+        for (char c : phrase.getCharacters()) {
+            if (!Objects.equals(c, ' ')) {
+                if (!correctGuesses.contains(c)) {
+                    return false;
+                }
             }
         }
         return true;
