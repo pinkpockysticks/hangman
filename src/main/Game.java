@@ -49,6 +49,16 @@ public class Game {
                     break;
                 }
 
+                if (mistakesCounter > 5) {
+                    otherPlayer.incrementScore();
+                    System.out.println(guessingPlayer.getName() + " has ran out of guesses! " + otherPlayer.getName() + " wins this round and gains one point!");
+                    System.out.println("The answer was: " + phrase.getPhrase());
+                    System.out.println(" -- Points -- ");
+                    System.out.println(player1.getName() + ": " + player1.getScore());
+                    System.out.println(player2.getName() + ": " + player2.getScore());
+                    break;
+                }
+
                 displayGame(phrase);
             }
         }
