@@ -36,6 +36,11 @@ public class Game {
         playGame(guessingPlayer, otherPlayer, phrase);
     }
 
+    public void setupGameFromLoad(Player guessingPlayer, Player otherPlayer, Phrase phrase) {
+        Phrase phrase = getPhrase(guessingPlayer, otherPlayer);
+        playGame(guessingPlayer, otherPlayer, phrase);
+    }
+
     public void playGame(Player guessingPlayer, Player otherPlayer, Phrase phrase) {
         if (phrase != null) {
             System.out.print(guessingPlayer.getName() + "! It's time to guess...");
@@ -70,6 +75,10 @@ public class Game {
                     Player tempPlayer = guessingPlayer;
                     guessingPlayer = otherPlayer;
                     otherPlayer = tempPlayer;
+                    correctGuesses.clear();
+                    mistakes.clear();
+                    mistakesCounter = 0;
+                    Phrase phrase = new Phrase(" ", " ");
                     saveGame(phrase, guessingPlayer, otherPlayer);
                     Main.menu();
                     break;
@@ -280,13 +289,14 @@ public class Game {
             int guessingScore = Integer.parseInt(fileReader.nextLine());
             int guessingGuesses = Integer.parseInt(fileReader.nextLine());
             int guessingCorrectGuesses = Integer.parseInt(fileReader.nextLine());
-            Player player1 = new Player(guessingName, guessingScore, guessingGuesses, guessingCorrectGuesses );
+            player1 = new Player(guessingName, guessingScore, guessingGuesses, guessingCorrectGuesses );
 
             fileReader.nextLine();
             String otherName = fileReader.nextLine();
             int otherScore = Integer.parseInt(fileReader.nextLine());
-            int otherGuesses = Integer.parseInt(fileReader.nextLine()); int otherCorrectGuesses = Integer.parseInt(fileReader.nextLine());
-            Player player2 = new Player(otherName, otherScore, otherGuesses, otherCorrectGuesses );
+            int otherGuesses = Integer.parseInt(fileReader.nextLine());
+            int otherCorrectGuesses = Integer.parseInt(fileReader.nextLine());
+            player2 = new Player(otherName, otherScore, otherGuesses, otherCorrectGuesses );
 
             Player guessingPlayer = player1;
             Player otherPlayer = player2;
@@ -294,8 +304,13 @@ public class Game {
             Phrase phrase = new Phrase(loadedPhrase, loadedHint);
 
             System.out.println("Saved game loaded successfully.");
+            System.out.println();
 
-            playGame(guessingPlayer, otherPlayer, phrase);
+            if (loadedPhrase.equals(" ")) {
+                setupGameFromLoad(guessingPlayer, otherPlayer, phrase);
+            } else {
+                playGame(guessingPlayer, otherPlayer, phrase);
+            }
 
         } catch (Exception e) {
             System.out.println("Could not load saved game. The file may be missing or corrupted.");
