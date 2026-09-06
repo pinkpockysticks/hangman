@@ -39,7 +39,7 @@ public class Game {
                 for (char m : mistakes) {
                     System.out.print(" " + m + " ");
                 }
-                if (!enterLetter(phrase, true)) {
+                if (!enterLetter(phrase, true, guessingPlayer, otherPlayer)) {
                     break;
                 }
 
@@ -61,7 +61,7 @@ public class Game {
                     Player tempPlayer = guessingPlayer;
                     guessingPlayer = otherPlayer;
                     otherPlayer = tempPlayer;
-                    saveGame(phrase);
+                    saveGame(phrase, guessingPlayer, otherPlayer);
                     break;
                 }
 
@@ -134,17 +134,17 @@ public class Game {
         System.out.println();
     }
 
-    private boolean enterLetter(Phrase phrase, boolean quitReturnsToMainMenu) {
+    private boolean enterLetter(Phrase phrase, boolean quitReturnsToMainMenu, Player guessingPlayer, Player otherPlayer) {
         List<Character> characters = phrase.getCharacters();
         System.out.println();
         System.out.println("Enter letter or command: ");
         String s = input.nextLine().trim().toLowerCase();
         if (s.length() != 1) {
             if (s.equals("quit")) {
-                saveGame(phrase);
+                saveGame(phrase, guessingPlayer, otherPlayer);
                 return false; //will implement saving and quitting later
             } else if (s.equals("save")){
-                saveGame(phrase);
+                saveGame(phrase, guessingPlayer, otherPlayer);
                 return true;
             } else {
                 System.out.println("That's not a valid letter or command!");
@@ -192,45 +192,48 @@ public class Game {
         return true;
     }
 
-    public void saveGame(Phrase phrase) {
+    public void saveGame(Phrase phrase, Player guessingPlayer, Player otherPlayer) {
 
         File file = new File("saves.txt");
 
-        try{
+        try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-
-            bw.write("\n");
 
             bw.write("correct guesses\n");
             for (Character character : correctGuesses) {
-                bw.write(character + "/n");
+                bw.write(character + "\n");
             }
 
             bw.write("incorrect guesses\n");
             for (Character character : mistakes) {
-                bw.write(character + "/n");
+                bw.write(character + "\n");
             }
 
             bw.write("mistakes count\n");
-            bw.write(mistakesCounter + "/n");
+            bw.write(mistakesCounter + "\n");
 
             bw.write("phrase characters\n");
             List<Character> characters = phrase.getCharacters();
             for (Character character : characters) {
-                bw.write(character + "/n");
+                bw.write(character + "\n");
             }
 
             bw.write("phrase\n");
             String word = phrase.getPhrase();
-            bw.write(word + "/n");
+            bw.write(word + "\n");
 
             bw.write("category\n");
             String hint = phrase.getHint();
-            bw.write(hint + "/n");
+            bw.write(hint + "\n");
+
+            bw.write("guessing player\n");
+            bw.write(guessingPlayer.getName() + "\n" + guessingPlayer.getScore() + "\n" +guessingPlayer.getTotalGuesses() + "\n" + guessingPlayer.getTotalCorrectGuesses() +"\n");
+
+            bw.write("other player\n");
+            bw.write(otherPlayer.getName() + "\n" + otherPlayer.getScore() + "\n" + otherPlayer.getTotalGuesses() + "\n" + otherPlayer.getTotalCorrectGuesses() +"\n");
 
             bw.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         System.out.println("Game saved successfully!");
