@@ -36,9 +36,9 @@ public class Game {
         playGame(guessingPlayer, otherPlayer, phrase);
     }
 
-    public void setupGameFromLoad(Player guessingPlayer, Player otherPlayer, Phrase phrase) {
-        Phrase phrase = getPhrase(guessingPlayer, otherPlayer);
-        playGame(guessingPlayer, otherPlayer, phrase);
+    public void setupGameFromLoad(Player guessingPlayer, Player otherPlayer) {
+        Phrase newPhrase = getPhrase(guessingPlayer, otherPlayer);
+        playGame(guessingPlayer, otherPlayer, newPhrase);
     }
 
     public void playGame(Player guessingPlayer, Player otherPlayer, Phrase phrase) {
@@ -78,8 +78,8 @@ public class Game {
                     correctGuesses.clear();
                     mistakes.clear();
                     mistakesCounter = 0;
-                    Phrase phrase = new Phrase(" ", " ");
-                    saveGame(phrase, guessingPlayer, otherPlayer);
+                    Phrase newPhrase = new Phrase(" ", " ");
+                    saveGame(newPhrase, guessingPlayer, otherPlayer);
                     Main.menu();
                     break;
                 }
@@ -307,7 +307,7 @@ public class Game {
             System.out.println();
 
             if (loadedPhrase.equals(" ")) {
-                setupGameFromLoad(guessingPlayer, otherPlayer, phrase);
+                setupGameFromLoad(guessingPlayer, otherPlayer);
             } else {
                 playGame(guessingPlayer, otherPlayer, phrase);
             }
