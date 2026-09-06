@@ -44,7 +44,7 @@ public class Main {
                     break;
                 }
             } else if (s.equalsIgnoreCase("q")) {
-                System.exit(0);
+                quitGame();
             }
         }
     }
@@ -83,6 +83,11 @@ public class Main {
             return true;
         }
         return false;
+    }
+
+    public static void quitGame() {
+        //save game
+        System.exit(0);
     }
 
 }
