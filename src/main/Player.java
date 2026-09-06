@@ -16,6 +16,16 @@ public class Player {
         this.accuracy = 0.0;
     }
 
+    //for loading in player details from file
+    public Player(String name, int score, int totalGuesses, int totalCorrectGuesses) {
+        this.name = name;
+        this.score = score;
+        this.totalGuesses = totalGuesses;
+        this.totalCorrectGuesses = totalCorrectGuesses;
+        this.accuracy = 0.0;
+        updateAccuracy();
+    }
+
     public void incrementScore() {
         score++;
     }

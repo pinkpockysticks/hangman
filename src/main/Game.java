@@ -29,11 +29,14 @@ public class Game {
         this.input = new Scanner(System.in);
     }
 
-    public void playGame() {
+    public void setupGame() {
         Player guessingPlayer = player1;
         Player otherPlayer = player2;
         Phrase phrase = getPhrase(guessingPlayer, otherPlayer);
+        playGame(guessingPlayer, otherPlayer, phrase);
+    }
 
+    public void playGame(Player guessingPlayer, Player otherPlayer, Phrase phrase) {
         if (phrase != null) {
             System.out.print(guessingPlayer.getName() + "! It's time to guess...");
             displayGame(phrase);
@@ -209,22 +212,16 @@ public class Game {
 
             bw.write("correct guesses\n");
             for (Character character : correctGuesses) {
-                bw.write(character + "\n");
+                bw.write(character);
             }
 
-            bw.write("incorrect guesses\n");
+            bw.write("\nincorrect guesses\n");
             for (Character character : mistakes) {
-                bw.write(character + "\n");
+                bw.write(character);
             }
 
-            bw.write("mistakes count\n");
+            bw.write("\nmistakes count\n");
             bw.write(mistakesCounter + "\n");
-
-            bw.write("phrase characters\n");
-            List<Character> characters = phrase.getCharacters();
-            for (Character character : characters) {
-                bw.write(character + "\n");
-            }
 
             bw.write("phrase\n");
             String word = phrase.getPhrase();
@@ -245,6 +242,64 @@ public class Game {
             e.printStackTrace();
         }
         System.out.println("Game saved successfully!");
+    }
+
+    public void loadGame() {
+        File file = new File("saves.txt");
+
+        if (!file.exists()) {
+            System.out.println("No saved game found.");
+            return;
+        }
+
+        try (Scanner fileReader = new Scanner(file)) {
+
+            fileReader.nextLine();
+            String correctGuessesLine = fileReader.nextLine();
+            for (char c : correctGuessesLine.toCharArray()) {
+                correctGuesses.add(c);
+            }
+
+            fileReader.nextLine();
+            String mistakesLine = fileReader.nextLine();
+            for (char c : mistakesLine.toCharArray()) {
+                mistakes.add(c);
+            }
+
+            fileReader.nextLine();
+            mistakesCounter = Integer.parseInt(fileReader.nextLine());
+
+            fileReader.nextLine();
+            String loadedPhrase = fileReader.nextLine();
+
+            fileReader.nextLine();
+            String loadedHint = fileReader.nextLine();
+
+            fileReader.nextLine();
+            String guessingName = fileReader.nextLine();
+            int guessingScore = Integer.parseInt(fileReader.nextLine());
+            int guessingGuesses = Integer.parseInt(fileReader.nextLine());
+            int guessingCorrectGuesses = Integer.parseInt(fileReader.nextLine());
+            Player player1 = new Player(guessingName, guessingScore, guessingGuesses, guessingCorrectGuesses );
+
+            fileReader.nextLine();
+            String otherName = fileReader.nextLine();
+            int otherScore = Integer.parseInt(fileReader.nextLine());
+            int otherGuesses = Integer.parseInt(fileReader.nextLine()); int otherCorrectGuesses = Integer.parseInt(fileReader.nextLine());
+            Player player2 = new Player(otherName, otherScore, otherGuesses, otherCorrectGuesses );
+
+            Player guessingPlayer = player1;
+            Player otherPlayer = player2;
+
+            Phrase phrase = new Phrase(loadedPhrase, loadedHint);
+
+            System.out.println("Saved game loaded successfully.");
+
+            playGame(guessingPlayer, otherPlayer, phrase);
+
+        } catch (Exception e) {
+            System.out.println("Could not load saved game. The file may be missing or corrupted.");
+        }
     }
 
 }

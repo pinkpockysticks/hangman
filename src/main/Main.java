@@ -51,7 +51,7 @@ public class Main {
                     System.out.println("No saved game found.");
                 } else {
                     Game game = new Game();
-                    game.playGame();
+                    game.loadGame();
                     break;
                 }
             } else if (s.equalsIgnoreCase("q")) {
@@ -64,7 +64,7 @@ public class Main {
         Player player1 = getName(1);
         Player player2 = getName(2);
         Game game = new Game(player1, player2);
-        game.playGame();
+        game.setupGame();
     }
 
     public static Player getName(int playerNo) {
